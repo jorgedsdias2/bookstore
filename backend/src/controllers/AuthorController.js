@@ -2,7 +2,6 @@ const Author = require('../models/Author');
 
 module.exports = {
     async create(req, res) {
-        console.log(req.body);
         try {
             const { name } = req.body;
 
@@ -10,14 +9,20 @@ module.exports = {
 
             return res.json(author);
         } catch(err) {
-            return res.status(400).json({ error: 'Created failed' });
+            return res.status(400).json({ error: `Created failed` });
         }
     },
 
     async update(req, res) {
-        const { id } = req.params;
-        const { name } = req.body;
+        try {
+            const { id } = req.params;
+            const { name } = req.body;
 
-        await Author.findByIdAndUpdate(id, { name });
+            const author = await Author.findByIdAndUpdate(id, { name });
+
+            return res.json(author);
+        } catch(err) {
+            return res.status(400).json({ error: `Updated failed` });
+        }
     }
 }
