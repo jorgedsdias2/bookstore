@@ -8,13 +8,12 @@ import api from '../../services/api';
 
 export default function Authors() {
     const [authors, setAuthors] = useState([]);
-    const [change, setChange] = useState(false);
     const [currentAuthor, setCurrentAuthor] = useState([]);
     const token = localStorage.getItem('token');
     
     useEffect(() => {
         async function loadAuthors() {
-            const response = await api.get('/api/authors', {
+            const response = await api.get('/authors', {
                 headers: { 'x-access-token' : localStorage.getItem('token') }
             });
     
@@ -22,40 +21,35 @@ export default function Authors() {
         }
 
         loadAuthors();
-
-        return () => {
-            setChange(false);
-        }
-    }, [change]);
+    }, []);
     
     async function addAuthor(author) {
-        await api.post('/api/authors/author', { name: author.name }, {
+        await api.post('/author', { name: author.name }, {
             headers: {
                 'x-access-token': token
             }
-        }).then(() => {
-            setChange(true);
+        }).then((response) => {
+            setAuthors([...authors, response.data]);
         });
     }
     
     async function deleteAuthor(id) {
-        api.delete(`/api/authors/author/${id}`, {
+        await api.delete(`/author/${id}`, {
             headers: {
                 'x-access-token': token
             }
         }).then(() => {
-            setChange(true);
+            setAuthors(authors.filter(a => a._id !== id));
         });
     }
     
     async function updateAuthor(id, author) {
-        api.put(`/api/authors/author/${id}`, { name: author.name }, {
+        await api.put(`/author/${id}`, { name: author.name }, {
             headers: {
                 'x-access-token': token
             }
         }).then(() => {
-            setChange(true);
-            setCurrentAuthor([]);
+            setAuthors(authors.map(a => a._id === id ? { ...author } : a));
         });
     }
     

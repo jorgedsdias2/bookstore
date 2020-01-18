@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+
 const envConfig = require('../config/env');
 
 module.exports = {
@@ -16,11 +17,10 @@ module.exports = {
             return res.status(400).json({ error: 'No token provided' });
 
         jwt.verify(token, envConfig.secret, (err, decoded) => {
-            if(err)
-                return res.status(400).json({ error: 'Failed to authenticate token' });
+            if(err) return res.status(400).json({ error: 'Failed to authenticate token' });
 
-                req.userId = decoded.id;
-                next();
+            req.userId = decoded.id;
+            next();
         });
     }
 }

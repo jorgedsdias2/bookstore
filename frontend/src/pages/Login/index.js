@@ -24,7 +24,7 @@ export default function Login({ history }) {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        await api.post('/api/auth/login', { email, password }).then(response => {
+        await api.post('/sessions/login', { email, password }).then(response => {
 
             const { token } = response.data;
 

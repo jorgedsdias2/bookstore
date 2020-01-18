@@ -1,6 +1,12 @@
 const Author = require('../models/Author');
 
 module.exports = {
+    async index(req, res) {
+        const authors = await Author.find();
+
+        return res.json({ authors });
+    },
+
     async create(req, res) {
         try {
             const { name } = req.body;
@@ -23,6 +29,18 @@ module.exports = {
             return res.json(author);
         } catch(err) {
             return res.status(400).json({ error: `Updated failed` });
+        }
+    },
+
+    async destroy(req, res) {
+        try {
+            const { id } = req.params;
+
+            const author = await Author.findByIdAndRemove(id);
+
+            return res.json(author);
+        } catch(err) {
+            return res.status(400).json({ error: `Deleted failed` });
         }
     }
 }
